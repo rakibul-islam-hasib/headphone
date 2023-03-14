@@ -6,14 +6,12 @@ const getApi = async () => {
     apiWork(data);
 }
 
+const cardContainer = document.getElementById("card-container");
 function apiWork(data) {
     // get the card container
-    const cardContainer = document.getElementById("card-container");
     // create a card for each country
     data.forEach(element => {
         // Get the currencies
-       
-
         const div = document.createElement("div");
         div.classList.add("col");
         // console.log(element);
@@ -35,8 +33,6 @@ function apiWork(data) {
 
         cardContainer.appendChild(div);
     });
-
-
 }
 
 getApi();
@@ -83,3 +79,55 @@ function modalWork(data){
         `
     console.log(Object.keys(currenciesArr));
 }
+
+// Search Function
+document.getElementById("search").addEventListener("keyup", function(e){
+    cardContainer.innerHTML = "";
+   
+    eventListener(e.target.value)
+}) ; 
+
+function eventListener(url_link){
+  
+    let url = `https://restcountries.com/v3.1/name/${url_link}`;
+    const searchApi = async () => {
+        const response = await fetch(url);
+        const data = await response.json();
+        apiWorkForSearch(data);
+    }
+    searchApi();
+    if(e.target.value == ""){
+        getApi();
+    }
+}
+
+// Search Function
+function apiWorkForSearch(data) {
+    // get the card container
+    // create a card for each country
+    data.forEach(element => {
+        // Get the currencies
+        const div = document.createElement("div");
+        div.classList.add("col");
+        // console.log(element);
+        const card = `
+        <div class="card p-3 h-100">
+        <img src="${element.flags.svg}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">${element.name.common}</h5>
+            <p class="card-text">${element.name.official}</p>
+            <p class="card-text">Capital : ${element.capital}</p>
+            <p class="card-text">Region : ${element.region}</p>
+            <p class="card-text">Subregion : ${element.subregion}</p>
+            <p><small>Like This Info Click the button to see more....</small></p>
+            <button type="button" onclick="modalFn('${element.cca2}')" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">See More</button>
+          </div>
+        </div>
+        `
+        div.innerHTML = card;
+
+        cardContainer.appendChild(div);
+    });
+}
+
+
