@@ -59,20 +59,27 @@ function modalWork(data){
         const valuesFromArr = Object.values(data.languages);
         // console.log(valuesFromArr.join(', '));
         const languages = valuesFromArr.join(', ');
+        const currenciesKey = Object.keys(data.currencies);
+        // const currenciesArr = data.currencies[currenciesKey];
+        const currenciesArr = Object.values(data.currencies);
         // const key = data.languages[keysFrom];
         modalBody.innerHTML = `
             <div class="card p-3">
                 <img src="${data.flags.svg}" alt="">
                 <br>
-                <h1 class="fs-5">Name : ${data.name.common}</h1>
+                <h1 class="fs-5">Name : <b> ${data.name.common}</b></h1>
                 <h1 class="fs-5">Capital : ${data.capital[0]}</h1>
                 <h1 class="fs-5">Region : ${data.region }</h1>
                 <p class="">Population : 161006790</p>
                 <p class="">Area : ${data.area}</p>
-                <p class="">Borders : ${data.borders}</p>
+                <p class="">Borders : ${data.borders ? data.borders : 'Not Found'}</p>
                 <p class="">Languages : ${languages}</p>
-                <p class="">Currencies : ${data}</p>
+                <p class="">Currencies : ${currenciesArr[0].name} <br>
+                Symbol : <b style="font-size:1.5em;">${currenciesArr[0].symbol}</b>
+                <br>
+                Name : ${currenciesKey[0]}
+                </p>
             </div>
         `
-    console.log(data.currencies);
+    console.log(Object.keys(currenciesArr));
 }
