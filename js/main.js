@@ -47,25 +47,25 @@ function modalFn(cca2) {
 }
 
 
-function modalWork(data){
-        // console.log(data); 
-        const modalBody = document.getElementById("modal-body");
-        const keysFromArr = Object.keys(data.languages);
-        // const keysFrom = keysFromArr.join(", ");
-        const valuesFromArr = Object.values(data.languages);
-        // console.log(valuesFromArr.join(', '));
-        const languages = valuesFromArr.join(', ');
-        const currenciesKey = Object.keys(data.currencies);
-        // const currenciesArr = data.currencies[currenciesKey];
-        const currenciesArr = Object.values(data.currencies);
-        // const key = data.languages[keysFrom];
-        modalBody.innerHTML = `
+function modalWork(data) {
+    // console.log(data); 
+    const modalBody = document.getElementById("modal-body");
+    const keysFromArr = Object.keys(data.languages);
+    // const keysFrom = keysFromArr.join(", ");
+    const valuesFromArr = Object.values(data.languages);
+    // console.log(valuesFromArr.join(', '));
+    const languages = valuesFromArr.join(', ');
+    const currenciesKey = Object.keys(data.currencies);
+    // const currenciesArr = data.currencies[currenciesKey];
+    const currenciesArr = Object.values(data.currencies);
+    // const key = data.languages[keysFrom];
+    modalBody.innerHTML = `
             <div class="card p-3">
                 <img src="${data.flags.svg}" alt="">
                 <br>
                 <h1 class="fs-5">Name : <b> ${data.name.common}</b></h1>
                 <h1 class="fs-5">Capital : ${data.capital[0]}</h1>
-                <h1 class="fs-5">Region : ${data.region }</h1>
+                <h1 class="fs-5">Region : ${data.region}</h1>
                 <p class="">Population : 161006790</p>
                 <p class="">Area : ${data.area}</p>
                 <p class="">Borders : ${data.borders ? data.borders : 'Not Found'}</p>
@@ -81,53 +81,58 @@ function modalWork(data){
 }
 
 // Search Function
-document.getElementById("search").addEventListener("keyup", function(e){
+document.getElementById("search").addEventListener("keyup", function (e) {
     cardContainer.innerHTML = "";
-   
-    eventListener(e.target.value)
-}) ; 
+    fetchDataFromSearch(e.target.value)
+});
+document.getElementById('search-btn').addEventListener('click', function () {
+    cardContainer.innerHTML = "";
+    fetchDataFromSearch(document.getElementById('search').value);
+});
+const searchBox = document.getElementById('search');
 
-function eventListener(url_link){
-  
-    let url = `https://restcountries.com/v3.1/name/${url_link}`;
-    const searchApi = async () => {
-        const response = await fetch(url);
-        const data = await response.json();
-        apiWorkForSearch(data);
-    }
-    searchApi();
-    if(e.target.value == ""){
+function fetchDataFromSearch(search_text) {
+
+    let url = `https://restcountries.com/v3.1/name/${search_text}`;
+
+    // searchBox.value = ""
+    if (search_text === "") {
         getApi();
     }
+    else {
+        const searchApi = async () => {
+            const response = await fetch(url);
+            if (response.status === 404) {
+                cardContainer.innerHTML = `
+                <div class="col">
+                    <div class="card p-3">
+                        <h1 class="fs-5">Not Found</h1>
+                    </div>
+                </div>
+                `
+            }
+            else {
+                try{
+                const data = await response.json();
+                apiWork(data);
+                }
+                catch (error) {
+                    console.error(error);
+                  }
+            }
+        }
+        searchApi();
+    }
+
 }
 
-// Search Function
-function apiWorkForSearch(data) {
-    // get the card container
-    // create a card for each country
-    data.forEach(element => {
-        // Get the currencies
-        const div = document.createElement("div");
-        div.classList.add("col");
-        // console.log(element);
-        const card = `
-        <div class="card p-3 h-100">
-        <img src="${element.flags.svg}" class="card-img-top" alt="...">
-        <div class="card-body">
-            <h5 class="card-title">${element.name.common}</h5>
-            <p class="card-text">${element.name.official}</p>
-            <p class="card-text">Capital : ${element.capital}</p>
-            <p class="card-text">Region : ${element.region}</p>
-            <p class="card-text">Subregion : ${element.subregion}</p>
-            <p><small>Like This Info Click the button to see more....</small></p>
-            <button type="button" onclick="modalFn('${element.cca2}')" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">See More</button>
-          </div>
-        </div>
-        `
-        div.innerHTML = card;
 
-        cardContainer.appendChild(div);
-    });
-}
+// Dropdown Function
+const dropdownMenu = document.querySelector(".dropdown-menu");
+dropdownMenu.addEventListener("click", function(event) {
+  const selectedOption = event.target;
+  const selectedValue = selectedOption.getAttribute("value");
+  console.log(selectedValue);
+});
 
 
